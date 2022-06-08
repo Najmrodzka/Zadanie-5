@@ -75,6 +75,42 @@ void info(const char *plik) {
         fclose(fp);
     }
 }
+void negatyw(const char* plik) {
+
+    FILE* fp = fopen(plik, "rb");
+
+    FILE* np = fopen("negatyw.bmp", "wb");
+    if (np == nullptr) {
+        cout << "\nNie mozna bylo otworzyc pliku";
+    }
+    else {
+        cout << "\nUdalo sie otworzyc plik: negatyw.bmp\n";
+        
+        cout << "TWORZE NEGATYW ...\n";
+        fwrite(&header_bmp.name[0], 1, 1, np);
+        fwrite(&header_bmp.name[1], 1, 1, np);
+        fwrite(&header_bmp.size, sizeof(header_bmp.size), 1, np);
+        fwrite(&header_bmp.reserved_1, sizeof(header_bmp.reserved_1), 1, np);
+        fwrite(&header_bmp.reserved_2, sizeof(header_bmp.reserved_2), 1, np);
+        fwrite(&header_bmp.offset, sizeof(header_bmp.offset), 1, np);
+
+        fwrite(&header_dib, sizeof(struct DIB_header), 1, np);
+
+        // Negatyw skopiowany od Pana dr inż. Mateusza Zielińskiego
+        int bmpImg;
+        for (int i = header_bmp.offset; i < header_bmp.size; i++)
+        {
+            fseek(fp, i, SEEK_SET);
+            fseek(np, i, SEEK_SET);
+            fread(&bmpImg, 3, 1, fp);
+            bmpImg = INT_MAX - bmpImg;
+            fwrite(&bmpImg, 3, 1, np);
+        }
+
+        fclose(fp);
+        fclose(np);
+    }
+}
 
 int main(int argc, char* argv[])
 {
