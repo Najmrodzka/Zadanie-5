@@ -114,6 +114,15 @@ void negatyw(const char* plik) {
 
 int main(int argc, char* argv[])
 {
+    const char* plik;
+    
+    if (argv[1] == nullptr) {
+        plik = "test.bmp";
+    } else {
+        plik = argv[1];
+    }
+    info(plik);
+    negatyw(plik);
 
     return 0;
 }
